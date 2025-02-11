@@ -89,13 +89,13 @@ with open('datos.txt', mode='r') as datos:
     lineas = [[valor.strip() for valor in linea.strip().split(',')] for linea in datos.readlines()]
     # print(lineas[0])
 
-    ## Pillar solo los DNIs ímpares y grabar en un archivo externo
-    # print(lineas[0][1])
-    # with open('impares.txt', mode='w') as salida:
-    #     for linea in lineas:
-    #         dni = linea[1]
-    #         if dni[-1].isdigit() and int(dni) % 2 != 0:
-    #             print(dni, file=salida)
+    # Pillar solo los DNIs ímpares y grabar en un archivo externo
+    print(lineas[0][1])
+    with open('impares.txt', mode='w') as salida:
+        for linea in lineas:
+            dni = linea[1]
+            if dni[-1].isdigit() and int(dni) % 2 != 0:
+                print(dni, file=salida)
 
 
 ## ----------------- Tests ----------------- 
