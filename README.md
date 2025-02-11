@@ -76,3 +76,7 @@ Escribe una descripción del cambio y haz clic en `Create pull request` (Crear P
 ### 7. Esperar revisión
 
 Tu Pull Request será revisado por el mantenedor del repositorio. Si todo está bien, se fusionará con la rama principal (`main` o `master`). Si se requieren cambios adicionales, el mantenedor te lo indicará.
+
+### Tutorial
+
+Hola! Alguna alteración...
