@@ -39,14 +39,14 @@ class Alumno():
         for atributo, valor in self.__dict__.items():
             print(f'>> {atributo}: {valor}')
 
-    ## 2.b Método que devuelve un alumno nuevo con los valores que se inserten por teclado
-    def nuevo_alumno(self):
-        print('# ------------ Nuevo Alumno ------------ #')
-        self.__nombre = input('>> Inserta el nombre del alumno: ')
-        self.__p_apellido = input('>> Inserta el primer apellido del alumno: ')
-        self.__dni = input('>> Inserta el DNI del alumno: ')
-        self.__correo = input('>> Inserta el email del alumno: ')
-        return self
+## 2.b Método que devuelve un alumno nuevo con los valores que se inserten por teclado
+def nuevo_alumno():
+    print('# ------------ Nuevo Alumno ------------ #')
+    nombre = input('>> Inserta el nombre del alumno: ')
+    p_apellido = input('>> Inserta el primer apellido del alumno: ')
+    dni = input('>> Inserta el DNI del alumno: ')
+    correo = input('>> Inserta el email del alumno: ')
+    return Alumno(nombre,p_apellido, dni, correo)
 
 ## 3. Crear una clase Alumno_IA que herede de Alumno y añadir atributos específicos
 class AlumnoIA(Alumno):
