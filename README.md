@@ -62,7 +62,7 @@ Después de confirmar los cambios, es hora de subirlos a GitHub. Usa el siguient
 
 ```bash
 git push origin nombre-de-tu-rama
-````
+```
 
 Esto enviará tu rama con los cambios al repositorio en GitHub.
 
@@ -77,6 +77,7 @@ Escribe una descripción del cambio y haz clic en `Create pull request` (Crear P
 
 Tu Pull Request será revisado por el mantenedor del repositorio. Si todo está bien, se fusionará con la rama principal (`main` o `master`). Si se requieren cambios adicionales, el mantenedor te lo indicará.
 
-### Tutorial
+## Documentos | Google Docs
 
-Hola! Alguna alteración...
+- [Guión 1 | Introducción a Python](https://docs.google.com/document/d/1VoInxl7XKjkz48B8c_cU_2ImecmmEWfKhhHOV4kuGao/edit?usp=sharing)
+- [Guión 2 | Búsqueda con Pacman](https://docs.google.com/document/d/1sbvCs2RUFN46dUjReb8AStsrWGLVUwg1XKUu0s4iIrg/edit?usp=sharing)

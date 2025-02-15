@@ -169,3 +169,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Apple Cache
+**/.DS_Store
+.DS_Store
+
+# Zips
+*.zip
