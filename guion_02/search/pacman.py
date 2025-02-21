@@ -225,10 +225,12 @@ class GameState:
             self.data = GameStateData(prevState.data)
         else:
             self.data = GameStateData()
+        self.goal = (1,1)
 
     def deepCopy( self ):
         state = GameState( self )
         state.data = self.data.deepCopy()
+        state.goal = self.goal
         return state
 
     def __eq__( self, other ):
@@ -252,6 +254,9 @@ class GameState:
         Creates an initial game state from a layout array (see layout.py).
         """
         self.data.initialize(layout, numGhostAgents)
+        print(f"OBJETIVO EN: {layout.goal}")
+        
+        self.goal = layout.goal
 
 ############################################################################
 #                     THE HIDDEN SECRETS OF PACMAN                         #

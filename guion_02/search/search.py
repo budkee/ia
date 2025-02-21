@@ -90,7 +90,37 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import Stack
+    
+    # Initialize a stack for DFS
+    stack = Stack()
+
+    # Push the starting state with an empty path and a cost of 0
+    start_state = problem.getStartState()
+    stack.push((start_state, [], 0))
+
+    # Maintain a set to track visited nodes
+    visited = set()
+
+    while not stack.isEmpty():
+        # Pop the top state from the stack
+        state, path, cost = stack.pop()
+
+        # If the state is the goal, return the path
+        if problem.isGoalState(state):
+            return path
+
+        # If the state has not been visited, process it
+        if state not in visited:
+            visited.add(state)
+
+            # Get successors and push them onto the stack
+            for successor, action, step_cost in problem.getSuccessors(state):
+                if successor not in visited:
+                    new_path = path + [action]
+                    stack.push((successor, new_path, cost + step_cost))
+
+    return []  # Return empty list if no solution is found
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
@@ -114,8 +144,42 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+
+def exploration(problem):
+     # Stack for DFS traversal
+    from util import Stack
+    stack = Stack()
+
+    # Get the starting state
+    start_state = problem.getStartState()
+    stack.push((start_state, []))  # (current state, path taken)
+
+    # Set to track visited states
+    visited = set()
+
+    # List to store the final path
+    exploration_path = []
+
+    while not stack.isEmpty():
+        # Pop the top state from the stack
+        state, path = stack.pop()
+
+        # If this state has not been visited
+        if state not in visited:
+            visited.add(state)
+            exploration_path.extend(path)  # Add path to exploration
+
+            # Get all valid successors (next states that are not walls)
+            for successor, action, step_cost in problem.getSuccessors(state):
+                if successor not in visited:
+                    new_path = path + [action]
+                    stack.push((successor, new_path))
+
+    return exploration_path  # Return a full exploration path
+
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+exp = exploration

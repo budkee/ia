@@ -159,9 +159,12 @@ class PositionSearchProblem(search.SearchProblem):
         self.walls = gameState.getWalls()
         self.startState = gameState.getPacmanPosition()
         if start != None: self.startState = start
-        self.goal = goal
+        print(f"OBJETIVO EN: {gameState.goal}")
+        self.goal = gameState.goal if gameState.goal is not None else (1,1)  # NUEVO: Usa el objetivo definido en el layout
+        print(f"OBJETIVO EN: {self.goal}")
         self.costFn = costFn
         self.visualize = visualize
+        print(gameState.getNumFood())
         if warn and (gameState.getNumFood() != 1 or not gameState.hasFood(*goal)):
             print('Warning: this does not look like a regular search maze')
 
@@ -253,6 +256,17 @@ class StayWestSearchAgent(SearchAgent):
         self.searchFunction = search.uniformCostSearch
         costFn = lambda pos: 2 ** pos[0]
         self.searchType = lambda state: PositionSearchProblem(state, costFn)
+        
+        
+class MiAgente_DFS(SearchAgent):
+    def __init__(self):
+        self.searchFunction = search.depthFirstSearch
+        self.searchType = lambda state: PositionSearchProblem(state)
+        
+        
+        
+        
+        
 
 def manhattanHeuristic(position, problem, info={}):
     "The Manhattan distance heuristic for a PositionSearchProblem"

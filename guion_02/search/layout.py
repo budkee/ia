@@ -33,6 +33,7 @@ class Layout:
         self.capsules = []
         self.agentPositions = []
         self.numGhosts = 0
+        self.goal = (1, 1)  # OBJETIVO PARA PROBLEMAS DE BÚSQUEDA. Por defecto en (1,1), pero se sobrescribirá si hay una 'X' en el fichero de layout (.lay)
         self.processLayoutText(layoutText)
         self.layoutText = layoutText
         self.totalFood = len(self.food.asList())
@@ -129,6 +130,10 @@ class Layout:
         elif layoutChar in  ['1', '2', '3', '4']:
             self.agentPositions.append( (int(layoutChar), (x,y)))
             self.numGhosts += 1
+        elif layoutChar == 'X':  # NUEVO: objetivo personalizado
+            self.goal = (x, y)  # Guarda la posición del objetivo (que se incluirá como food)
+            self.food[x][y] = True
+            
 def getLayout(name, back = 2):
     if name.endswith('.lay'):
         layout = tryToLoad('layouts/' + name)
