@@ -63,9 +63,7 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-
-
-
+# ------------ Estrategias de Búsqueda ------------
 def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     """
     Returns a sequence of moves that solves tinyMaze.  For any other maze, the
@@ -97,7 +95,7 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
 
     # Push the starting state with an empty path and a cost of 0
     start_state = problem.getStartState()
-    stack.push((start_state, [], 0))
+    stack.push((start_state, [], 0)) # (state, path, cost)
 
     # Maintain a set to track visited nodes
     visited = set()
@@ -121,16 +119,59 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
                     stack.push((successor, new_path, cost + step_cost))
 
     return []  # Return empty list if no solution is found
+    # util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """Busca expandiendo el nodo de menor costo acumulado primero."""
+    from util import PriorityQueue
+    pq = PriorityQueue()
+    start_state = problem.getStartState()
+    # La prioridad inicial es 0
+    pq.push((start_state, []), 0)
+    visited = {}
+    
+    while not pq.isEmpty():
+        state, path = pq.pop()
+        cost = problem.getCostOfActions(path)
+        if problem.isGoalState(state):
+            return path
+        
+        # Solo se actualiza si se encuentra un camino de menor costo
+        if state not in visited or cost < visited[state]:
+            visited[state] = cost
+            for successor, action, step_cost in problem.getSuccessors(state):
+                new_path = path + [action]
+                new_cost = cost + step_cost
+                pq.push((successor, new_path), new_cost)
+    return []
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """Busca expandiendo el nodo de menor costo acumulado primero."""
+    from util import PriorityQueue
+    pq = PriorityQueue()
+    start_state = problem.getStartState()
+    # La prioridad inicial es 0
+    pq.push((start_state, []), 0)
+    visited = {}
+    
+    while not pq.isEmpty():
+        state, path = pq.pop()
+        cost = problem.getCostOfActions(path)
+        if problem.isGoalState(state):
+            return path
+        
+        # Solo se actualiza si se encuentra un camino de menor costo
+        if state not in visited or cost < visited[state]:
+            visited[state] = cost
+            for successor, action, step_cost in problem.getSuccessors(state):
+                new_path = path + [action]
+                new_cost = cost + step_cost
+                pq.push((successor, new_path), new_cost)
+    return []
 
 def nullHeuristic(state, problem=None) -> float:
     """
@@ -142,44 +183,51 @@ def nullHeuristic(state, problem=None) -> float:
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directions]:
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-
-def exploration(problem):
-     # Stack for DFS traversal
-    from util import Stack
-    stack = Stack()
-
-    # Get the starting state
+    """Búsqueda A* que utiliza la función heurística para guiar la búsqueda."""
+    from util import PriorityQueue
+    pq = PriorityQueue()
     start_state = problem.getStartState()
-    stack.push((start_state, []))  # (current state, path taken)
-
-    # Set to track visited states
-    visited = set()
-
-    # List to store the final path
-    exploration_path = []
-
-    while not stack.isEmpty():
-        # Pop the top state from the stack
-        state, path = stack.pop()
-
-        # If this state has not been visited
-        if state not in visited:
-            visited.add(state)
-            exploration_path.extend(path)  # Add path to exploration
-
-            # Get all valid successors (next states that are not walls)
+    start_priority = heuristic(start_state, problem)
+    pq.push((start_state, []), start_priority)
+    visited = {}
+    
+    while not pq.isEmpty():
+        state, path = pq.pop()
+        cost = problem.getCostOfActions(path)
+        if problem.isGoalState(state):
+            return path
+        
+        if state not in visited or cost < visited[state]:
+            visited[state] = cost
             for successor, action, step_cost in problem.getSuccessors(state):
-                if successor not in visited:
-                    new_path = path + [action]
-                    stack.push((successor, new_path))
+                new_path = path + [action]
+                new_cost = cost + step_cost
+                priority = new_cost + heuristic(successor, problem)
+                pq.push((successor, new_path), priority)
+    return []
 
-    return exploration_path  # Return a full exploration path
+# ------------ Agente de Exploración ------------
+
+def exploracion(problem: SearchProblem, state) -> List[Directions]:
+    """
+    Realiza una exploración completa del espacio del laberinto.
+    Devuelve el camino completo de exploración.
+    """
+    
+    # ----- Inicialización de Variables -----
+    camino_exploracion = util.Queue()  # Cola para la frontera de nodos
+    camino_visitados = set()  # Conjunto de nodos visitados
+    camino_visitados.add((problem.getStartState(), []))  # Añade el nodo inicial a la frontera
+    acciones = state.getLegalActions()  # Obtiene las acciones legales del estado actual
+
+
+    
+
+    return camino_exploracion  # Devuelve el camino de exploración completa
 
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
-exp = exploration
+exp = exploracion

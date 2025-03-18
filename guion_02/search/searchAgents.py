@@ -58,6 +58,7 @@ class GoWestAgent(Agent):
 #       after you fill in parts of search.py          #
 #######################################################
 
+# ----------- Agentes ------------
 class SearchAgent(Agent):
     """
     This very general search agent finds a path using a supplied search
@@ -136,6 +137,19 @@ class SearchAgent(Agent):
             return self.actions[i]
         else:
             return Directions.STOP
+
+class ExplorerAgent(SearchAgent):
+    """
+    Agente que explora el laberinto recorriendo la mayor cantidad de casillas.
+    Utiliza la función de exploración (basada en DFS) definida en search.py.
+    """
+    def __init__(self):
+        self.searchFunction = search.exp
+        self.searchType = lambda state: PositionSearchProblem(state)
+
+    def getAction(self, state):
+        return search.exploracion(state)
+
 
 class PositionSearchProblem(search.SearchProblem):
     """
@@ -258,15 +272,7 @@ class StayWestSearchAgent(SearchAgent):
         self.searchType = lambda state: PositionSearchProblem(state, costFn)
         
         
-class MiAgente_DFS(SearchAgent):
-    def __init__(self):
-        self.searchFunction = search.depthFirstSearch
-        self.searchType = lambda state: PositionSearchProblem(state)
-        
-        
-        
-        
-        
+
 
 def manhattanHeuristic(position, problem, info={}):
     "The Manhattan distance heuristic for a PositionSearchProblem"
@@ -356,8 +362,7 @@ class CornersProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
-
-
+    
 
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
@@ -377,7 +382,6 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     "*** YOUR CODE HERE ***"
     return 0 # Default to trivial solution
-
 
 
 class AStarCornersAgent(SearchAgent):
