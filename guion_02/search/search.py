@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 from game import Directions
+from pacman import GameState
 from typing import List
 
 class SearchProblem:
@@ -71,7 +72,7 @@ def tinyMazeSearch(problem: SearchProblem) -> List[Directions]:
     """
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return  [s, s, w, s, w, w, s, w] #type: ignore
 
 def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """
@@ -113,7 +114,7 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
             visited.add(state)
 
             # Get successors and push them onto the stack
-            for successor, action, step_cost in problem.getSuccessors(state):
+            for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 if successor not in visited:
                     new_path = path + [action]
                     stack.push((successor, new_path, cost + step_cost))
@@ -141,7 +142,7 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
         # Solo se actualiza si se encuentra un camino de menor costo
         if state not in visited or cost < visited[state]:
             visited[state] = cost
-            for successor, action, step_cost in problem.getSuccessors(state):
+            for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 new_path = path + [action]
                 new_cost = cost + step_cost
                 pq.push((successor, new_path), new_cost)
@@ -167,7 +168,7 @@ def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
         # Solo se actualiza si se encuentra un camino de menor costo
         if state not in visited or cost < visited[state]:
             visited[state] = cost
-            for successor, action, step_cost in problem.getSuccessors(state):
+            for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 new_path = path + [action]
                 new_cost = cost + step_cost
                 pq.push((successor, new_path), new_cost)
@@ -184,22 +185,25 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     """Búsqueda A* que utiliza la función heurística para guiar la búsqueda."""
-    from util import PriorityQueue
-    pq = PriorityQueue()
+    # ----------------- Inicialización de Variables -----------------
+    pq = util.PriorityQueue()
     start_state = problem.getStartState()
     start_priority = heuristic(start_state, problem)
     pq.push((start_state, []), start_priority)
     visited = {}
     
     while not pq.isEmpty():
-        state, path = pq.pop()
+        state, path = pq.pop() # (estado, camino)
         cost = problem.getCostOfActions(path)
+        
+        # Test de Objetivo
         if problem.isGoalState(state):
             return path
         
+        # Verifica si el estado ya fue visitado y si el costo de este estado es menor que el anterior
         if state not in visited or cost < visited[state]:
             visited[state] = cost
-            for successor, action, step_cost in problem.getSuccessors(state):
+            for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 new_path = path + [action]
                 new_cost = cost + step_cost
                 priority = new_cost + heuristic(successor, problem)
@@ -208,20 +212,47 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
 
 # ------------ Agente de Exploración ------------
 
-def exploracion(problem: SearchProblem, state) -> List[Directions]:
+def exploracion(problem: SearchProblem) -> List[Directions]:
     """
     Realiza una exploración completa del espacio del laberinto.
     Devuelve el camino completo de exploración.
     """
     
-    # ----- Inicialización de Variables -----
-    camino_exploracion = util.Queue()  # Cola para la frontera de nodos
-    camino_visitados = set()  # Conjunto de nodos visitados
-    camino_visitados.add((problem.getStartState(), []))  # Añade el nodo inicial a la frontera
-    acciones = state.getLegalActions()  # Obtiene las acciones legales del estado actual
-
+    # ----- Inicialización de Variables y Estados iniciales -----
+    state = GameState()
+    # Camino de exploración completo
+    camino_exploracion = []  
+    # Conjunto de nodos visitados
+    casillas_visitadas = set()  
+    # Pila de nodos a explorar
+    frontera = util.Stack()  
 
     
+    # Estado inicial
+    inicio = problem.getStartState()
+    frontera.push((inicio, []))  # (estado del nodo, camino hasta él)
+    casillas_visitadas.add(inicio)  # [nodo1, nodo2, ...]
+    
+
+    # ----- Búsqueda en Profundidad -----
+    while not frontera.isEmpty():
+        # Extrae el nodo de la frontera y guarda el camino actual
+        nodo_actual, camino_actual = frontera.pop()
+        camino_exploracion.extend(camino_actual)
+        
+        # A cada iteracion se crea un nuevo estado
+        acciones_legales = state.getLegalActions() # (successor, action, stepCost)
+
+        # Explora los sucesores del nodo actual
+        for accion in acciones_legales: #type: ignore
+            
+            sucesor = problem.getSuccessors(nodo_actual) # (successor, action, stepCost)
+
+            if sucesor not in casillas_visitadas:
+                # Añade el sucesor a la frontera
+                frontera.push((sucesor, camino_actual + [accion]))
+                # Añade el sucesor a las casillas visitadas
+                casillas_visitadas.add(sucesor)
 
     return camino_exploracion  # Devuelve el camino de exploración completa
 

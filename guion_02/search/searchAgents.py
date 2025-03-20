@@ -146,10 +146,31 @@ class ExplorerAgent(SearchAgent):
     def __init__(self):
         self.searchFunction = search.exp
         self.searchType = lambda state: PositionSearchProblem(state)
+        self.actions = []  # Almacena el camino calculado
+        self.actionIndex = 0  # Índice de la acción actual
 
     def getAction(self, state):
-        return search.exploracion(state)
+        
+        # ----------- Acciones del Agente -----------
+        # 1. Si aún no se ha calculado el camino, lo genera
+        if not self.actions:  
+            # Crea el problema de búsqueda
+            problem = self.searchType(state)  
+            # Obtiene la ruta de exploración
+            self.actions = self.searchFunction(problem)  
+            # Reinicia el índice de acción
+            self.actionIndex = 0  
 
+        # 2. Si quedan acciones por ejecutar, devuelve la siguiente
+        if self.actionIndex < len(self.actions):  
+            # Obtiene la acción actual
+            action = self.actions[self.actionIndex]  
+            # Avanza al siguiente paso
+            self.actionIndex += 1  
+            return action  
+
+        # 3. Si no hay más acciones, el agente se detiene
+        return Directions.STOP  
 
 class PositionSearchProblem(search.SearchProblem):
     """
@@ -216,7 +237,7 @@ class PositionSearchProblem(search.SearchProblem):
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             x,y = state
-            dx, dy = Actions.directionToVector(action)
+            dx, dy = Actions.directionToVector(action) #type: ignore
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
@@ -272,8 +293,6 @@ class StayWestSearchAgent(SearchAgent):
         self.searchType = lambda state: PositionSearchProblem(state, costFn)
         
         
-
-
 def manhattanHeuristic(position, problem, info={}):
     "The Manhattan distance heuristic for a PositionSearchProblem"
     xy1 = position
