@@ -144,33 +144,9 @@ class ExplorerAgent(SearchAgent):
     Utiliza la función de exploración (basada en DFS) definida en search.py.
     """
     def __init__(self):
-        self.searchFunction = search.exp
+        self.searchFunction = search.exp 
         self.searchType = lambda state: PositionSearchProblem(state)
-        self.actions = []  # Almacena el camino calculado
-        self.actionIndex = 0  # Índice de la acción actual
 
-    def getAction(self, state):
-        
-        # ----------- Acciones del Agente -----------
-        # 1. Si aún no se ha calculado el camino, lo genera
-        if not self.actions:  
-            # Crea el problema de búsqueda
-            problem = self.searchType(state)  
-            # Obtiene la ruta de exploración
-            self.actions = self.searchFunction(problem)  
-            # Reinicia el índice de acción
-            self.actionIndex = 0  
-
-        # 2. Si quedan acciones por ejecutar, devuelve la siguiente
-        if self.actionIndex < len(self.actions):  
-            # Obtiene la acción actual
-            action = self.actions[self.actionIndex]  
-            # Avanza al siguiente paso
-            self.actionIndex += 1  
-            return action  
-
-        # 3. Si no hay más acciones, el agente se detiene
-        return Directions.STOP  
 
 class PositionSearchProblem(search.SearchProblem):
     """

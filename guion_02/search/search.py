@@ -219,11 +219,10 @@ def exploracion(problem: SearchProblem) -> List[Directions]:
     """
     
     # ----- Inicialización de Variables y Estados iniciales -----
-    state = GameState()
     # Camino de exploración completo
     camino_exploracion = []  
     # Conjunto de nodos visitados
-    casillas_visitadas = set()  
+    casillas_visitadas = list()  
     # Pila de nodos a explorar
     frontera = util.Stack()  
 
@@ -231,17 +230,18 @@ def exploracion(problem: SearchProblem) -> List[Directions]:
     # Estado inicial
     inicio = problem.getStartState()
     frontera.push((inicio, []))  # (estado del nodo, camino hasta él)
-    casillas_visitadas.add(inicio)  # [nodo1, nodo2, ...]
+    casillas_visitadas.append(inicio)  # [nodo1, nodo2, ...]
     
 
     # ----- Búsqueda en Profundidad -----
     while not frontera.isEmpty():
+        
         # Extrae el nodo de la frontera y guarda el camino actual
         nodo_actual, camino_actual = frontera.pop()
         camino_exploracion.extend(camino_actual)
         
         # A cada iteracion se crea un nuevo estado
-        acciones_legales = state.getLegalActions() # (successor, action, stepCost)
+        acciones_legales = problem.getSuccessors(inicio) # Pasa el state y return (successor, action, stepCost)
 
         # Explora los sucesores del nodo actual
         for accion in acciones_legales: #type: ignore
@@ -252,7 +252,7 @@ def exploracion(problem: SearchProblem) -> List[Directions]:
                 # Añade el sucesor a la frontera
                 frontera.push((sucesor, camino_actual + [accion]))
                 # Añade el sucesor a las casillas visitadas
-                casillas_visitadas.add(sucesor)
+                casillas_visitadas.append(sucesor)
 
     return camino_exploracion  # Devuelve el camino de exploración completa
 
