@@ -144,8 +144,10 @@ class ExplorerAgent(SearchAgent):
     Utiliza la función de exploración (basada en DFS) definida en search.py.
     """
     def __init__(self):
-        self.searchFunction = search.exp 
+        self.searchFunction = search.exp
         self.searchType = lambda state: PositionSearchProblem(state)
+    
+
 
 
 class PositionSearchProblem(search.SearchProblem):

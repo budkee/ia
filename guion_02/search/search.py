@@ -127,7 +127,7 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     # ------- Inicialización -------
     fila = Queue()
     start_state = problem.getStartState()
-    fila.push((start_state, [], 0))
+    fila.push((start_state, []), 0)
     visited = {}
 
     # ------- Bucle de exploración -------
@@ -145,7 +145,7 @@ def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
             for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 new_path = path + [action]
                 new_cost = cost + step_cost
-                pq.push((successor, new_path), new_cost)
+                fila.push((successor, new_path), new_cost)
     return []
 
 def uniformCostSearch(problem: SearchProblem) -> List[Directions]:
@@ -221,39 +221,39 @@ def exploracion(problem: SearchProblem) -> List[Directions]:
     # ----- Inicialización -----
     camino_exploracion = []  # Lista que almacenará el camino completo
     casillas_visitadas = set()  # Conjunto de nodos ya explorados
-    frontera = util.Queue()  # Cola para manejar la exploración en anchura
+    frontera = util.Stack()  # Pila para manejar la exploración
     
     # Estado inicial
     inicio = problem.getStartState()
-    # print(inicio)
-    frontera.push((inicio, []))  # (estado, camino hasta él)
-    # print(frontera.list)
     casillas_visitadas.add(inicio)
-    # print(casillas_visitadas)
+    frontera.push((inicio, []))
+    # nodo_actual = inicio
+    # camino_actual = []
     
     # ----- Bucle de exploración -----
     while not frontera.isEmpty():
-        # Extraer el nodo actual y su camino
+        # Extraer el nodo actual y su camino    
         nodo_actual, camino_actual = frontera.pop()
+        casillas_visitadas.add(nodo_actual)
         print(nodo_actual, camino_actual)
+    
         # Agregar el camino tomado hasta el momento
         if camino_actual:
             camino_exploracion.append(camino_actual[-1])  # Solo la última acción
 
-        sucesores = problem.getSuccessors(nodo_actual)
+        # Test Objetivo
+        if problem.isGoalState(nodo_actual):
+            return camino_exploracion
         
-        if sucesores is None:
-            print(f"Erro: getSuccessors({nodo_actual}) retornou None!")  
-            continue 
+        sucesores = problem.getSuccessors(nodo_actual)
         # print(sucesores)
         # Obtener los sucesores del nodo actual
         for sucesor, accion, _ in sucesores:  
             if sucesor not in casillas_visitadas:
-                # Depuración: imprimir la acción que se intenta ejecutar
-                # print(f"Intentando mover: {accion} desde {nodo_actual} hacia {sucesor}")
-                # Agregar a la cola con el camino actualizado
+                
+                # Agregar a la pila con el camino actualizado
                 frontera.push((sucesor, camino_actual + [accion]))
-                casillas_visitadas.add(sucesor)
+        
 
     return camino_exploracion
 
