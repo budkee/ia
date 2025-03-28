@@ -91,21 +91,18 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     "*** YOUR CODE HERE ***"
     from util import Stack
     
-    # Initialize a stack for DFS
-    stack = Stack()
-
-    # Push the starting state with an empty path and a cost of 0
+    # ------- Inicialización -------
+    pila = Stack()
     start_state = problem.getStartState()
-    stack.push((start_state, [], 0)) # (state, path, cost)
-
-    # Maintain a set to track visited nodes
+    pila.push((start_state, [], 0)) # (state, path, cost)
     visited = set()
 
-    while not stack.isEmpty():
+    # ------- Bucle de exploración -------
+    while not pila.isEmpty():
         # Pop the top state from the stack
-        state, path, cost = stack.pop()
+        state, path, cost = pila.pop()
 
-        # If the state is the goal, return the path
+        # Test de Objetivo
         if problem.isGoalState(state):
             return path
 
@@ -117,25 +114,28 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
             for successor, action, step_cost in problem.getSuccessors(state): #type: ignore
                 if successor not in visited:
                     new_path = path + [action]
-                    stack.push((successor, new_path, cost + step_cost))
+                    pila.push((successor, new_path, cost + step_cost))
 
-    return []  # Return empty list if no solution is found
+    return [] 
     # util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    """Busca expandiendo el nodo de menor costo acumulado primero."""
-    from util import PriorityQueue
-    pq = PriorityQueue()
+    from util import Queue
+
+    # ------- Inicialización -------
+    fila = Queue()
     start_state = problem.getStartState()
-    # La prioridad inicial es 0
-    pq.push((start_state, []), 0)
+    fila.push((start_state, [], 0))
     visited = {}
-    
-    while not pq.isEmpty():
-        state, path = pq.pop()
+
+    # ------- Bucle de exploración -------
+    while not fila.isEmpty():
+        state, path = fila.pop()
         cost = problem.getCostOfActions(path)
+
+        # Test de Objetivo
         if problem.isGoalState(state):
             return path
         
@@ -214,47 +214,49 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic) -> List[Directi
 
 def exploracion(problem: SearchProblem) -> List[Directions]:
     """
-    Realiza una exploración completa del espacio del laberinto.
+    Realiza una exploración completa del espacio del laberinto usando BFS.
     Devuelve el camino completo de exploración.
     """
     
-    # ----- Inicialización de Variables y Estados iniciales -----
-    # Camino de exploración completo
-    camino_exploracion = []  
-    # Conjunto de nodos visitados
-    casillas_visitadas = list()  
-    # Pila de nodos a explorar
-    frontera = util.Stack()  
-
+    # ----- Inicialización -----
+    camino_exploracion = []  # Lista que almacenará el camino completo
+    casillas_visitadas = set()  # Conjunto de nodos ya explorados
+    frontera = util.Queue()  # Cola para manejar la exploración en anchura
     
     # Estado inicial
     inicio = problem.getStartState()
-    frontera.push((inicio, []))  # (estado del nodo, camino hasta él)
-    casillas_visitadas.append(inicio)  # [nodo1, nodo2, ...]
+    # print(inicio)
+    frontera.push((inicio, []))  # (estado, camino hasta él)
+    # print(frontera.list)
+    casillas_visitadas.add(inicio)
+    # print(casillas_visitadas)
     
-
-    # ----- Búsqueda en Profundidad -----
+    # ----- Bucle de exploración -----
     while not frontera.isEmpty():
-        
-        # Extrae el nodo de la frontera y guarda el camino actual
+        # Extraer el nodo actual y su camino
         nodo_actual, camino_actual = frontera.pop()
-        camino_exploracion.extend(camino_actual)
+        print(nodo_actual, camino_actual)
+        # Agregar el camino tomado hasta el momento
+        if camino_actual:
+            camino_exploracion.append(camino_actual[-1])  # Solo la última acción
+
+        sucesores = problem.getSuccessors(nodo_actual)
         
-        # A cada iteracion se crea un nuevo estado
-        acciones_legales = problem.getSuccessors(inicio) # Pasa el state y return (successor, action, stepCost)
-
-        # Explora los sucesores del nodo actual
-        for accion in acciones_legales: #type: ignore
-            
-            sucesor = problem.getSuccessors(nodo_actual) # (successor, action, stepCost)
-
+        if sucesores is None:
+            print(f"Erro: getSuccessors({nodo_actual}) retornou None!")  
+            continue 
+        # print(sucesores)
+        # Obtener los sucesores del nodo actual
+        for sucesor, accion, _ in sucesores:  
             if sucesor not in casillas_visitadas:
-                # Añade el sucesor a la frontera
+                # Depuración: imprimir la acción que se intenta ejecutar
+                # print(f"Intentando mover: {accion} desde {nodo_actual} hacia {sucesor}")
+                # Agregar a la cola con el camino actualizado
                 frontera.push((sucesor, camino_actual + [accion]))
-                # Añade el sucesor a las casillas visitadas
-                casillas_visitadas.append(sucesor)
+                casillas_visitadas.add(sucesor)
 
-    return camino_exploracion  # Devuelve el camino de exploración completa
+    return camino_exploracion
+
 
 # Abbreviations
 bfs = breadthFirstSearch
